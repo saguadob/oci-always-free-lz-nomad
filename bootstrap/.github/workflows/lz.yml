@@ -1,0 +1,35 @@
+name: Run OCI Multi-Account Token Exchange
+
+on:
+  push:
+    branches: bootstrap
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: 'write' # Required to fetch GitHub OIDC tokens
+    env:
+      OCI_CLI_TENANCY: ${{secrets.OCI_TENANCY}} # Variable for Account 1's Tenancy OCID
+      OCI_CLI_REGION: ${{secrets.OCI_REGION}} # Variable for Account 1's OCI Region
+      OCI_CLI_AUTH: security_token
+      OCI_CLI_PROFILE: CI
+    steps:
+
+      - name: Run OCI Token Exchange Action (Account 1)
+        id: oci-oidc-auth
+        uses: gtrevorrow/oci-token-exchange-action@v2.0.0
+        with:
+          oidc_client_identifier: ${{secrets.OIDC_CLIENT_IDENTIFIER}} # Secret for Account 1's OAuth Client ID:Secret
+          domain_base_url: ${{secrets.OCI_IDENTITY_DOMAIN_BASE_URL}} # Variable for Account 1's Identity Domain URL
+          oci_tenancy: ${{ env.OCI_CLI_TENANCY }} # Variable for Account 1's Tenancy OCID
+          oci_region: ${{ env.OCI_CLI_REGION }} # Variable for Account 1's OCI Region
+          oci_profile: ${{ env.OCI_CLI_PROFILE }}
+
+      - name: Retrieve the OCID of a named compartment in tenancy
+        uses: oracle-actions/run-oci-cli-command@v1.3.2
+        id: test
+        env:
+          OCI_CLI_SECURITY_TOKEN_FILE: ${{ steps.oci-oidc-auth.outputs.oci_session_token_path }}
+        with:
+          command: 'os ns get'
