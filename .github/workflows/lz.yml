@@ -2,7 +2,8 @@ name: Run OCI Multi-Account Token Exchange
 
 on:
   push:
-    branches: bootstrap
+    branches:
+      - bootstrap
 
 jobs:
   build:
