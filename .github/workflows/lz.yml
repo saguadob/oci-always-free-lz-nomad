@@ -26,6 +26,7 @@ jobs:
           oci_tenancy: ${{ env.OCI_CLI_TENANCY }} # Variable for Account 1's Tenancy OCID
           oci_region: ${{ env.OCI_CLI_REGION }} # Variable for Account 1's OCI Region
           oci_profile: ${{ env.OCI_CLI_PROFILE }}
+          debug: true
 
       - name: Retrieve the OCID of a named compartment in tenancy
         uses: oracle-actions/run-oci-cli-command@v1.3.2

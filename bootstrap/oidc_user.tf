@@ -76,6 +76,7 @@ resource "oci_identity_domains_identity_propagation_trust" "github" {
     rule  = "sub eq 'repo:${var.repo}:ref:refs/heads/${var.branch}'"
     value = oci_identity_domains_user.github.id
     ocid  = oci_identity_domains_user.github.ocid
+    
   }
 }
 
@@ -88,5 +89,9 @@ output "oidc_client_secret" {
 }
 
 output "oci_identity_domain_base_url" {
-  value = data.oci_identity_domains.current.domains.0.home_region_url
+  value = data.oci_identity_domains.current.domains.0.url
+}
+
+output "test" {
+  value = oci_identity_domains_identity_propagation_trust.github
 }
